@@ -15,7 +15,7 @@
   \***************************/
 /***/ (() => {
 
-eval("const butInstall = document.getElementById('buttonInstall');\n\n// Logic for installing the PWA\n// TODO: Add an event handler to the `beforeinstallprompt` event\nwindow.addEventListener('beforeinstallprompt', event => {});\n\n// TODO: Implement a click event handler on the `butInstall` element\nbutInstall.addEventListener('click', async () => {});\n\n// TODO: Add an handler for the `appinstalled` event\nwindow.addEventListener('appinstalled', event => {});\n\n//# sourceURL=webpack://JATE/./src/js/install.js?");
+eval("const butInstall = document.getElementById('buttonInstall');\n\n// Logic for installing the PWA\n// TODO: Add an event handler to the `beforeinstallprompt` event\nwindow.addEventListener('beforeinstallprompt', event => {\n  window.defferedPrompt = event;\n  butInstall.classList.toggle('hidden', false);\n});\n\n// TODO: Implement a click event handler on the `butInstall` element\nbutInstall.addEventListener('click', async () => {\n  const promptEvent = window.defferedPrompt;\n  if (!promptEvent) {\n    return;\n  }\n  promptEvent.prompt();\n  window.defferedPrompt = null;\n  butInstall.classList.toggle('hidden', true);\n});\n\n// TODO: Add an handler for the `appinstalled` event\nwindow.addEventListener('appinstalled', event => {\n  window.defferedPrompt = null;\n});\n\n//# sourceURL=webpack://JATE/./src/js/install.js?");
 
 /***/ })
 

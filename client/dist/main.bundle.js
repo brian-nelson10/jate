@@ -16,7 +16,7 @@
   \****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"getDb\": () => (/* binding */ getDb),\n/* harmony export */   \"putDb\": () => (/* binding */ putDb)\n/* harmony export */ });\n/* harmony import */ var idb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! idb */ \"./node_modules/idb/build/esm/index.js\");\n\nconst initdb = async () => (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)('jate', 1, {\n  upgrade(db) {\n    if (db.objectStoreNames.contains('jate')) {\n      console.log('jate database already exists');\n      return;\n    }\n    db.createObjectStore('jate', {\n      keyPath: 'id',\n      autoIncrement: true\n    });\n    console.log('jate database created');\n  }\n});\n\n// TODO: Add logic to a method that accepts some content and adds it to the database\nconst putDb = async content => console.error('putDb not implemented');\n\n// TODO: Add logic for a method that gets all the content from the database\nconst getDb = async () => console.error('getDb not implemented');\ninitdb();\n\n//# sourceURL=webpack://JATE/./src/js/database.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"getDb\": () => (/* binding */ getDb),\n/* harmony export */   \"putDb\": () => (/* binding */ putDb)\n/* harmony export */ });\n/* harmony import */ var idb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! idb */ \"./node_modules/idb/build/esm/index.js\");\n\nconst initdb = async () => (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)('jate', 1, {\n  upgrade(db) {\n    if (db.objectStoreNames.contains('jate')) {\n      console.log('jate database already exists');\n      return;\n    }\n    db.createObjectStore('jate', {\n      keyPath: 'id',\n      autoIncrement: true\n    });\n    console.log('jate database created');\n  }\n});\n\n// TODO: Add logic to a method that accepts some content and adds it to the database\nconst putDb = async content => {\n  console.log('Post to the database');\n\n  // Create a connection to the database database and version we want to use.\n  const jateDb = await (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)('jate', 1);\n\n  // Create a new transaction and specify the database and data privileges.\n  const tx = jateDb.transaction('jate', 'readwrite');\n\n  // Open up the desired object store.\n  const store = tx.objectStore('jate');\n\n  // Use the .add() method on the store and pass in the content.\n  const request = store.put({\n    id: 1,\n    value: content\n  });\n\n  // Get confirmation of the request.\n  const result = await request;\n  console.log('🚀 - data saved to the database', result);\n};\n\n// TODO: Add logic for a method that gets all the content from the database\nconst getDb = async () => {\n  console.log('GET from the database');\n\n  // Create a connection to the database database and version we want to use.\n  const jateDb = await (0,idb__WEBPACK_IMPORTED_MODULE_0__.openDB)('jate', 1);\n\n  // Create a new transaction and specify the database and data privileges.\n  const tx = jateDb.transaction('jate', 'readonly');\n\n  // Open up the desired object store.\n  const store = tx.objectStore('jate');\n\n  // Use the .getAll() method to get all data in the database.\n  const request = store.getAll();\n\n  // Get confirmation of the request.\n  const result = await request;\n  console.log('result.value', result);\n  return result;\n};\ninitdb();\n\n//# sourceURL=webpack://JATE/./src/js/database.js?");
 
 /***/ }),
 
@@ -26,7 +26,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _database__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./database */ \"./src/js/database.js\");\n/* harmony import */ var _header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./header */ \"./src/js/header.js\");\n// Import methods to save and get data from the indexedDB database in './database.js'\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class {\n  constructor() {\n    const localData = localStorage.getItem('content');\n\n    // check if CodeMirror is loaded\n    if (typeof CodeMirror === 'undefined') {\n      throw new Error('CodeMirror is not loaded');\n    }\n    this.editor = CodeMirror(document.querySelector('#main'), {\n      value: '',\n      mode: 'javascript',\n      theme: 'monokai',\n      lineNumbers: true,\n      lineWrapping: true,\n      autofocus: true,\n      indentUnit: 2,\n      tabSize: 2\n    });\n\n    // When the editor is ready, set the value to whatever is stored in indexeddb.\n    // Fall back to localStorage if nothing is stored in indexeddb, and if neither is available, set the value to header.\n    (0,_database__WEBPACK_IMPORTED_MODULE_0__.getDb)().then(data => {\n      console.info('Loaded data from IndexedDB, injecting into editor');\n      this.editor.setValue(data || localData || _header__WEBPACK_IMPORTED_MODULE_1__.header);\n    });\n    this.editor.on('change', () => {\n      localStorage.setItem('content', this.editor.getValue());\n    });\n\n    // Save the content of the editor when the editor itself is loses focus\n    this.editor.on('blur', () => {\n      console.log('The editor has lost focus');\n      (0,_database__WEBPACK_IMPORTED_MODULE_0__.putDb)(localStorage.getItem('content'));\n    });\n  }\n});\n\n//# sourceURL=webpack://JATE/./src/js/editor.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _database_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./database.js */ \"./src/js/database.js\");\n/* harmony import */ var _header_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./header.js */ \"./src/js/header.js\");\n// Import methods to save and get data from the indexedDB database in './database.js'\n\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class {\n  constructor() {\n    const localData = localStorage.getItem('content');\n\n    // check if CodeMirror is loaded\n    if (typeof CodeMirror === 'undefined') {\n      throw new Error('CodeMirror is not loaded');\n    }\n    this.editor = CodeMirror(document.querySelector('#main'), {\n      value: '',\n      mode: 'javascript',\n      theme: 'monokai',\n      lineNumbers: true,\n      lineWrapping: true,\n      autofocus: true,\n      indentUnit: 2,\n      tabSize: 2\n    });\n\n    // When the editor is ready, set the value to whatever is stored in indexeddb.\n    // Fall back to localStorage if nothing is stored in indexeddb, and if neither is available, set the value to header.\n    (0,_database_js__WEBPACK_IMPORTED_MODULE_0__.getDb)().then(data => {\n      console.info('Loaded data from IndexedDB, injecting into editor');\n      this.editor.setValue(data[data.length - 1].content || localData || _header_js__WEBPACK_IMPORTED_MODULE_1__.header);\n    });\n    this.editor.on('change', () => {\n      localStorage.setItem('content', this.editor.getValue());\n    });\n\n    // Save the content of the editor when the editor itself is loses focus\n    this.editor.on('blur', () => {\n      console.log('The editor has lost focus');\n      (0,_database_js__WEBPACK_IMPORTED_MODULE_0__.putDb)(localStorage.getItem('content'));\n    });\n  }\n});\n\n//# sourceURL=webpack://JATE/./src/js/editor.js?");
 
 /***/ }),
 
@@ -46,7 +46,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \*************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var workbox_window__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! workbox-window */ \"./node_modules/workbox-window/build/workbox-window.prod.es5.mjs\");\n/* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./editor */ \"./src/js/editor.js\");\n/* harmony import */ var _database__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./database */ \"./src/js/database.js\");\n/* harmony import */ var _css_style_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../css/style.css */ \"./src/css/style.css\");\n/* harmony import */ var _images_logo_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../images/logo.png */ \"./src/images/logo.png\");\n\n\n\n\n\nwindow.addEventListener('load', function () {\n  document.getElementById('logo').src = _images_logo_png__WEBPACK_IMPORTED_MODULE_4__;\n});\nconst main = document.querySelector('#main');\nmain.innerHTML = '';\nconst loadSpinner = () => {\n  const spinner = document.createElement('div');\n  spinner.classList.add('spinner');\n  spinner.innerHTML = `\n  <div class=\"loading-container\">\n  <div class=\"loading-spinner\" />\n  </div>\n  `;\n  main.appendChild(spinner);\n};\nconst editor = new _editor__WEBPACK_IMPORTED_MODULE_1__[\"default\"]();\nif (typeof editor === 'undefined') {\n  loadSpinner();\n}\n\n// Check if service workers are supported\nif ('serviceWorker' in navigator) {\n  // register workbox service worker\n  const workboxSW = new workbox_window__WEBPACK_IMPORTED_MODULE_0__.Workbox('/src-sw.js');\n  workboxSW.register();\n} else {\n  console.error('Service workers are not supported in this browser.');\n}\n\n//# sourceURL=webpack://JATE/./src/js/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var workbox_window__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! workbox-window */ \"./node_modules/workbox-window/build/workbox-window.prod.es5.mjs\");\n/* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./editor */ \"./src/js/editor.js\");\n/* harmony import */ var _database__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./database */ \"./src/js/database.js\");\n/* harmony import */ var _css_style_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../css/style.css */ \"./src/css/style.css\");\n\n\n\n\n\n// import Logo from '../assets/icons/icon_96x96.png'\n\n// window.addEventListener('load', function () {\n//   document.getElementById('logo').src = Logo;\n// });\n\nconst main = document.querySelector('#main');\nmain.innerHTML = '';\nconst loadSpinner = () => {\n  const spinner = document.createElement('div');\n  spinner.classList.add('spinner');\n  spinner.innerHTML = `\n  <div class=\"loading-container\">\n  <div class=\"loading-spinner\" />\n  </div>\n  `;\n  main.appendChild(spinner);\n};\nconst editor = new _editor__WEBPACK_IMPORTED_MODULE_1__[\"default\"]();\nif (typeof editor === 'undefined') {\n  loadSpinner();\n}\n\n// Check if service workers are supported\nif ('serviceWorker' in navigator) {\n  // register workbox service worker\n  const workboxSW = new workbox_window__WEBPACK_IMPORTED_MODULE_0__.Workbox('/src-sw.js');\n  workboxSW.register();\n} else {\n  console.error('Service workers are not supported in this browser.');\n}\n\n//# sourceURL=webpack://JATE/./src/js/index.js?");
 
 /***/ }),
 
@@ -170,16 +170,6 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 
 /***/ }),
 
-/***/ "./src/images/logo.png":
-/*!*****************************!*\
-  !*** ./src/images/logo.png ***!
-  \*****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-eval("module.exports = __webpack_require__.p + \"acb8ab69b886771f021d.png\";\n\n//# sourceURL=webpack://JATE/./src/images/logo.png?");
-
-/***/ }),
-
 /***/ "./node_modules/workbox-window/build/workbox-window.prod.es5.mjs":
 /*!***********************************************************************!*\
   !*** ./node_modules/workbox-window/build/workbox-window.prod.es5.mjs ***!
@@ -241,18 +231,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -267,26 +245,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/publicPath */
-/******/ 	(() => {
-/******/ 		var scriptUrl;
-/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
-/******/ 		var document = __webpack_require__.g.document;
-/******/ 		if (!scriptUrl && document) {
-/******/ 			if (document.currentScript)
-/******/ 				scriptUrl = document.currentScript.src
-/******/ 			if (!scriptUrl) {
-/******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
-/******/ 			}
-/******/ 		}
-/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
-/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
-/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
-/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
-/******/ 		__webpack_require__.p = scriptUrl;
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/nonce */

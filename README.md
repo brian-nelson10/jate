@@ -30,7 +30,7 @@ This program can be run through a browser using the link to the the deployed app
 * Run "npm start" to start the backend and serve the client.
 * Go to the url of the application (http//:localhost:3000) to begin using it.
 
-**[Install Link](https://github.com/brian-nelson10/jate)**
+**[Install Link](https://github.com/brian-nelson10/jate.git)**
 
 # Usage
 

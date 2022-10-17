@@ -17,7 +17,7 @@ JATE is a text editor that runs in the browser. Its a single page application th
 
 # Deployed Link
 
-
+https://boiling-bastion-80720.herokuapp.com/
 
 # Installation
 
@@ -42,6 +42,8 @@ Type any code snippet or notes in the editor. The content will be saved in the I
 If the Install button is clicked, the web application will be downloaded as an icon in your desktop.
 
 The application works without an internet connection.
+
+**[ScreenShot](images/screencapture-boiling-bastion-80720-herokuapp-2022-10-17-14_55_23.png)**
 
 # Contribution
 
